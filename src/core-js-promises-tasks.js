@@ -102,8 +102,9 @@ function getFirstPromiseResult(promises) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)] => Promise rejected with 2
  */
-function getAllOrNothing(/* promises */) {
-  throw new Error('Not implemented');
+function getAllOrNothing(promises) {
+  const result = Promise.all(promises);
+  return result;
 }
 
 /**
@@ -118,8 +119,20 @@ function getAllOrNothing(/* promises */) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with [1, null, 3]
  */
-function getAllResult(/* promises */) {
-  throw new Error('Not implemented');
+function getAllResult(promises) {
+  const newPromise = Promise.allSettled(promises).then((results) => {
+    const arr = [];
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        arr.push(result.value);
+      } else {
+        arr.push(null);
+      }
+    });
+    return arr;
+  });
+
+  return newPromise;
 }
 
 /**
